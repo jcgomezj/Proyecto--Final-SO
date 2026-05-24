@@ -1,0 +1,84 @@
+
+=======================================================
+ BENCHMARK DE CPU — Pipeline Comprimir + Cifrar RC4
+=======================================================
+Archivo        : tests/bench_text.txt
+Tamaño original: 237000 bytes (0.23 MB)
+
+── TAMAÑOS EN I/O (bus disco) ──────────────────────
+  A. Clásico (plano)           : 237000 bytes (100%)
+  B1. Solo Huffman             : 138561 bytes (58.5% del original)
+  B2. Solo LZ77               : 29888 bytes (12.6% del original)
+  C1. Huffman + RC4            : 138561 bytes (= B1; RC4 sin padding)
+  C2. LZ77   + RC4            : 29888 bytes (= B2; RC4 sin padding)
+
+── TIEMPO DE CPU (CLOCK_PROCESS_CPUTIME_ID) ────────
+  A. Clásico (memcpy a buffer):              0.0015 ms
+  B1. Huffman (compresión sola):             2.1565 ms
+  B2. LZ77 (compresión sola):               53.7238 ms
+  C1. Pipeline Huffman + RC4:             
+      ├── Compresión Huffman:                 2.1331 ms
+      ├── Cifrado RC4 (AISLADO):              0.5139 ms
+      └── TOTAL pipeline:                     2.6470 ms
+  C2. Pipeline LZ77 + RC4:                
+      ├── Compresión LZ77:                   54.8202 ms
+      ├── Cifrado RC4 (AISLADO):              0.0999 ms
+      └── TOTAL pipeline:                    54.9201 ms
+
+── ANÁLISIS DE IMPACTO ──────────────────────────────
+  Overhead RC4 sobre Huffman   : +0.5139 ms (19.4% del pipeline)
+  Overhead RC4 sobre LZ77      : +0.0999 ms (0.2% del pipeline)
+  Reducción I/O (Huffman+RC4)  : 41.5% menos bytes al bus de disco
+  Reducción I/O (LZ77+RC4)     : 87.4% menos bytes al bus de disco
+
+── CONCLUSIÓN ARQUITECTÓNICA ────────────────────────
+  Orden correcto: COMPRIMIR primero, CIFRAR después.
+  RC4 genera entropía ~8 bits/byte: si cifráramos primero,
+  los datos serían pseudoaleatorios → Huffman y LZ77 no
+  encontrarían patrones → compresión nula o negativa.
+  El overhead de RC4 (0.5139 ms) compra seguridad total
+  con un archivo 41.5% más pequeño en disco.
+=======================================================
+
+
+=======================================================
+ BENCHMARK DE CPU — Pipeline Comprimir + Cifrar RC4
+=======================================================
+Archivo        : tests/xlarge.txt
+Tamaño original: 199232 bytes (0.19 MB)
+
+── TAMAÑOS EN I/O (bus disco) ──────────────────────
+  A. Clásico (plano)           : 199232 bytes (100%)
+  B1. Solo Huffman             : 103155 bytes (51.8% del original)
+  B2. Solo LZ77               : 66108 bytes (33.2% del original)
+  C1. Huffman + RC4            : 103155 bytes (= B1; RC4 sin padding)
+  C2. LZ77   + RC4            : 66108 bytes (= B2; RC4 sin padding)
+
+── TIEMPO DE CPU (CLOCK_PROCESS_CPUTIME_ID) ────────
+  A. Clásico (memcpy a buffer):              0.0006 ms
+  B1. Huffman (compresión sola):             3.3632 ms
+  B2. LZ77 (compresión sola):              155.1964 ms
+  C1. Pipeline Huffman + RC4:             
+      ├── Compresión Huffman:                 3.2537 ms
+      ├── Cifrado RC4 (AISLADO):              0.3944 ms
+      └── TOTAL pipeline:                     3.6481 ms
+  C2. Pipeline LZ77 + RC4:                
+      ├── Compresión LZ77:                  153.8799 ms
+      ├── Cifrado RC4 (AISLADO):              0.2205 ms
+      └── TOTAL pipeline:                   154.1004 ms
+
+── ANÁLISIS DE IMPACTO ──────────────────────────────
+  Overhead RC4 sobre Huffman   : +0.3944 ms (10.8% del pipeline)
+  Overhead RC4 sobre LZ77      : +0.2205 ms (0.1% del pipeline)
+  Reducción I/O (Huffman+RC4)  : 48.2% menos bytes al bus de disco
+  Reducción I/O (LZ77+RC4)     : 66.8% menos bytes al bus de disco
+
+── CONCLUSIÓN ARQUITECTÓNICA ────────────────────────
+  Orden correcto: COMPRIMIR primero, CIFRAR después.
+  RC4 genera entropía ~8 bits/byte: si cifráramos primero,
+  los datos serían pseudoaleatorios → Huffman y LZ77 no
+  encontrarían patrones → compresión nula o negativa.
+  El overhead de RC4 (0.3944 ms) compra seguridad total
+  con un archivo 48.2% más pequeño en disco.
+=======================================================
+

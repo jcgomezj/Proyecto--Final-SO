@@ -1,0 +1,5 @@
+Este es un archivo de prueba para el editor IO-Editor.
+Contiene múltiples líneas de texto.
+Se usará para probar la compresión y el cifrado RC4.
+
+Línea adicional de prueba.
