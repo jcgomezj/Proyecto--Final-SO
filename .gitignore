@@ -1,0 +1,15 @@
+# Binario compilado
+editor
+ 
+# Objetos y dependencias de compilación
+obj/
+ 
+# Archivos generados por el editor durante pruebas
+*.huff.rc4
+*.lz77.rc4
+*.report
+ 
+# Archivos de texto de prueba locales
+mi_texto.txt
+prueba.txt
+prueba2.txt
