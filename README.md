@@ -3,7 +3,7 @@
 Editor de texto en terminal que implementa un pipeline de guardado seguro: comprime con Huffman o LZ77, cifra con RC4 propio, y escribe al disco. La lectura invierte el proceso de forma simétrica.
 
 Proyecto 3 — Sistemas Operativos  
-Universidad —  Autores: Estefa, Juanjo, JuanCa
+Universidad —  Autores: Estefania Ramirez, Juan José Baron, Camilo Gomez
 
 ---
 
